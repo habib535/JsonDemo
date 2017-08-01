@@ -1,0 +1,100 @@
+﻿<link rel="import" href="/sys/polymer/polymer.html">
+
+<template>
+    <template is="dom-bind">
+        <h2>Json Model Demo</h2>
+        Please hit F12 and click Demo buttons to see the request/response in Console info<br />
+        <button type="button" class="btn btn-primary" on-click="sendModel">Model Class Json</button>
+        <button type="button" class="btn btn-primary" on-click="sendPerson">Person Class Json</button>
+    </template>
+    <script>
+        (function () {
+            var script = document._currentScript || document.currentScript;
+            var template = script.previousElementSibling;
+
+
+            var sampleJson = {
+                name: "Michal Nosek",
+                company: "Starcounter",
+                location: "Poland"
+            };
+
+            var personJson = {
+                Name: "Marcin",
+                Age: 25
+            };
+
+            var ControllerInput = {
+                "CustomData": {
+                    "CustomOrderClauseList": [
+                        {
+                            "ColumnName": "abc",
+                            "IsAscending": false
+                        }
+                    ],
+                    "CustomPaginate": {
+                        "Page": 0,
+                        "PageSize": 10
+                    },
+                    "SummaryInfoList": [
+                        "avg"
+                    ]
+                },
+                "Filters": [
+                    {
+                        "Index": 0,
+                        "FilterOperationValue": {
+                            "Column": "IsLastSaved",
+                            "CompareColumn": "",
+                            "Type": "",
+                            "AppliedFilters": [
+                                {
+                                    "Operator": "==",
+                                    "SuppliedValue": [
+                                        0
+                                    ],
+                                    "SuppliedValueHashSet": [
+                                        "one", "two", "three", "four"
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "IsLastSaved": 0,
+                "Reload": false,
+                "LoadId": 2,
+                "ScenarioId": 45
+            };
+
+            var sendReceiveJson = function (json, uri) {
+                console.info('Post request with');
+                console.info(JSON.parse(JSON.stringify(json)));
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.open("POST", uri);
+                xmlhttp.setRequestHeader("Content-Type", "application/json");
+                xmlhttp.onreadystatechange = function () {
+                    if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+                        console.info('response received');
+                        var json = JSON.parse(xmlhttp.responseText);
+                        console.info(json);
+                    }
+                };
+                xmlhttp.send(JSON.stringify(json));
+            }
+
+            //template.sendSimple = function () {
+            //    sendReceiveJson(sampleJson, '/jsondemo/string');
+            //};
+
+            template.sendModel = function () {
+                sendReceiveJson(ControllerInput, '/jsondemo/object');
+            };
+
+            template.sendPerson = function () {
+                sendReceiveJson(personJson, '/jsondemo/person');
+            };
+
+        })();
+    </script>
+</template>
